@@ -1,14 +1,13 @@
 from typing import List
 
 class CourseNode:
-    def __init__(self, course_id: int, preq_of=None):
-        self.preq_of = preq_of
+    def __init__(self, course_id: int):
+        self.preq_of = []
         self.course_id = course_id
 
 
 class Solution:
     def checkIfPrerequisite(self, numCourses: int, prerequisites: List[List[int]], queries: List[List[int]]) -> List[bool]:
-
         courses = []
 
         for course_id in range(numCourses):
@@ -16,7 +15,7 @@ class Solution:
             courses.append(course)
 
         for preq in prerequisites:
-            courses[preq[0]].preq_of = preq[1]
+            courses[preq[0]].preq_of.append(preq[1])
 
         result = []
         for query in queries:
@@ -26,21 +25,20 @@ class Solution:
 
     def courseBFS(self, courses: List[CourseNode], source: CourseNode, dest: CourseNode) -> bool:
 
-        queue = []
-        queue.append(source)
+        visited = set()
+        queue = [source]
 
-            while queue:
-            course = queue.pop(0)
-            if course == dest:
+        while queue:
+            current = queue.pop(0)
+            if current.course_id == dest.course_id:
                 return True
-            if course.preq_of is not None:
-                queue.append(courses[course.preq_of])
+
+            for preq in current.preq_of:
+                if preq not in visited:
+                    queue.append(courses[preq])
+                    visited.add(preq)
+
         return False
-
-
-s = Solution()
-print(s.checkIfPrerequisite(3, [[1,2],[1,0],[2,0]], [[1,0],[1,2]]))
-
 
 
 
